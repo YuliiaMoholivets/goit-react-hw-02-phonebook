@@ -16,25 +16,35 @@ export default class App extends Component {
     filter: '',
   };
 
-  addContact = ({ name, number }) => {
+  _addContact = ({ name, number }) => {
+    const { contacts } = this.state;
+    if (
+      contacts.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+    if (contacts.some(contact => contact.number === number)) {
+      alert(`${number} is already in contacts.`);
+      return;
+    }
     const contact = {
       id: shortid.generate(),
       name,
       number,
     };
-
-    const { contacts } = this.state;
-
-    if (contacts.find(contact => contact.name === name)) {
-      alert(`${name} is already in contacts.`);
-    } else if (contacts.find(contact => contact.number === number)) {
-      alert(`${number} is already in contacts.`);
-    } else {
-      this.setState(({ contacts }) => ({
-        contacts: [contact, ...contacts],
-      }));
-    }
+    this.setState(({ contacts }) => ({
+      contacts: [contact, ...contacts],
+    }));
   };
+  get addContact() {
+    return this._addContact;
+  }
+  set addContact(value) {
+    this._addContact = value;
+  }
 
   deleteContact = contactId => {
     this.setState(({ contacts }) => ({
@@ -63,7 +73,7 @@ export default class App extends Component {
         <h1>Phonebook</h1>
         <ContactForm onSubmit={this.addContact} />
         <h2>Contacts</h2>
-        {contacts.length > 1 && (
+        {contacts.length > 0 && (
           <ContactFilter value={filter} onChange={this.changeFilter} />
         )}
         {contacts.length > 0 ? (
