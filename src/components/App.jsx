@@ -39,12 +39,6 @@ export default class App extends Component {
       contacts: [contact, ...contacts],
     }));
   };
-  get addContact() {
-    return this._addContact;
-  }
-  set addContact(value) {
-    this._addContact = value;
-  }
 
   deleteContact = contactId => {
     this.setState(({ contacts }) => ({
